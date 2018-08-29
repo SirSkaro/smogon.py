@@ -183,10 +183,15 @@ def extractDataFromString(species, generation = 7):
     returnjson = {}
     returnjson['url'] = "https://www.smogon.com/dex/{}/pokemon/{}/".format(generation_codes[str(generation)], species)
     returnjson['sets'] = [] # to include a json of format, title, description and showdownset
-    r = requests.get(returnjson['url']).text
-    jsonstring = r.split("<script")[1].split("</script>")[0].split("dexSettings = ")[1].strip()
-    jsondata = json.loads(jsonstring)
-    strategylist = jsondata['injectRpcs'][2][1]['strategies']
+
+    try:
+        req = requests.get(returnjson['url']).text
+        jsonstring = req.split("<script")[1].split("</script>")[0].split("dexSettings = ")[1].strip()
+        jsondata = json.loads(jsonstring)
+        strategylist = jsondata['injectRpcs'][2][1]['strategies']
+    except:
+        return returnjson
+
     for i in strategylist:
         meta = i['format']
         for j in i['movesets']:
